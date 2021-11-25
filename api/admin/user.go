@@ -9,23 +9,21 @@ import (
 	"time"
 )
 
-type userManageJson struct {
-	Name     string `json:"name"`
-	SchoolID string `json:"school_id"`
-	// 隐藏密码
-	Password    string `json:"-"`
-	Power       int    `json:"power" binding:"min=1,max=2"`
-	SuperUser   int    `json:"super_user" binding:"min=-1,max=1"`
-	Gender      int    `json:"gender" binding:"min=0,max=2"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email" binding:"email"`
-	Description string `json:"description"`
-
-	LastActive *time.Time `json:"last_active"`
-}
-
 func AddUser(c *gin.Context) {
-	var json userManageJson
+	var json struct {
+		Name     string `json:"name" binding:"required"`
+		SchoolID string `json:"school_id" binding:"required"`
+		// 隐藏密码
+		Password    string `json:"password" binding:"required,min=6"`
+		Power       int    `json:"power" binding:"min=1,max=2"`
+		SuperUser   int    `json:"super_user" binding:"min=-1,max=1"`
+		Gender      int    `json:"gender" binding:"min=0,max=2"`
+		Phone       string `json:"phone"`
+		Email       string `json:"email" binding:"omitempty,email"`
+		Description string `json:"description"`
+
+		LastActive *time.Time `json:"last_active"`
+	}
 	if !api.BindAndValid(c, &json) {
 		return
 	}
@@ -71,7 +69,20 @@ func EditUser(c *gin.Context) {
 		return
 	}
 
-	var json userManageJson
+	var json struct {
+		Name     string `json:"name"`
+		SchoolID string `json:"school_id"`
+		// 隐藏密码
+		Password    string `json:"password"`
+		Power       int    `json:"power" binding:"omitempty,min=1,max=2"`
+		SuperUser   int    `json:"super_user" binding:"omitempty,min=-1,max=1"`
+		Gender      int    `json:"gender" binding:"omitempty,min=0,max=2"`
+		Phone       string `json:"phone"`
+		Email       string `json:"email" binding:"omitempty,email"`
+		Description string `json:"description"`
+
+		LastActive *time.Time `json:"last_active"`
+	}
 	if !api.BindAndValid(c, &json) {
 		return
 	}

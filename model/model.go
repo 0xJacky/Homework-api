@@ -47,6 +47,9 @@ func init() {
 
 	// 自动迁移
 	AutoMigrate(&User{})
+	AutoMigrate(&Assign{})
+	AutoMigrate(&Class{})
+	AutoMigrate(&Homework{})
 	AutoMigrate(&Upload{})
 	AutoMigrate(&Message{})
 
@@ -61,7 +64,7 @@ func init() {
 		db.Create(&User{
 			SchoolID:  "admin",
 			Password:  pkg.PasswordHash("123456"),
-			SuperUser: 101,
+			SuperUser: 1,
 		})
 	}
 

@@ -15,7 +15,7 @@ func adminRoute() {
 		g.GET("users", admin.GetUserList)
 		g.GET("user/:id", admin.GetUser)
 		g.POST("user/:id", admin.EditUser)
-		g.POST("user", admin.EditUser)
-		g.DELETE("user/:id", admin.EditUser)
+		g.POST("user", admin.AddUser)
+		g.DELETE("user/:id", admin.DeleteUser)
 	}
 }

@@ -51,7 +51,7 @@ func Can(power ...settings.UserType) gin.HandlerFunc {
 func SuperUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		user := c.MustGet("user").(*model.User)
-		if user.SuperUser != 101 {
+		if user.SuperUser != 1 {
 			c.JSON(http.StatusForbidden, gin.H{
 				"message": "forbidden",
 			})

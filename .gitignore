@@ -1,0 +1,6 @@
+tmp
+.vscode/launch.json
+.idea
+/conf/app.ini
+/upload
+.DS_Store

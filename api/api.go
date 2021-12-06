@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/0xJacky/Homework-api/model"
-	"github.com/beego/beego/v2/adapter/validation"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"log"
@@ -56,35 +55,4 @@ func CurrentUser(c *gin.Context) *model.User {
 
 func BindAndValid(c *gin.Context, v interface{}) bool {
 	return bindAndValid(c, v)
-}
-
-func GetAndValidateForm(c *gin.Context, api_obj interface{}) {
-	var err error
-	var re bool
-	valid := validation.Validation{}
-	err = c.BindJSON(api_obj)
-	if err != nil {
-		ErrHandler(c, err)
-		panic("json bind failed")
-	}
-	re, err = valid.Valid(api_obj)
-	if err != nil {
-		ErrHandler(c, err)
-		panic("valid init failed")
-	}
-	if !re {
-		validError := make(map[string]string)
-
-		for _, v := range valid.Errors {
-			validError[v.Field] = v.Message
-			log.Println("validError", v.Field, v.Message)
-		}
-
-		c.JSON(http.StatusBadRequest, JsonSnakeCase{gin.H{
-			"errors":  validError,
-			"message": "请求参数错误",
-			"code":    http.StatusBadRequest,
-		}})
-		panic("validate failed")
-	}
 }

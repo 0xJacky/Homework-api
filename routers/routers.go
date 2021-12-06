@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"github.com/0xJacky/Homework-api/api"
 	"log"
 	"net/http"
 
@@ -14,6 +15,7 @@ func recovery() gin.HandlerFunc {
 		defer func() {
 			if err := recover(); err != nil {
 				log.Println(err)
+				api.ErrHandler(c, err.(error))
 			}
 		}()
 

@@ -9,7 +9,7 @@ import (
 	zhTranslations "github.com/go-playground/validator/v10/translations/zh"
 	"log"
 	"net/http"
-	"strings"
+	"reflect"
 )
 
 type ValidError struct {
@@ -17,22 +17,22 @@ type ValidError struct {
 	Message string
 }
 
-func bindAndValid(c *gin.Context, v interface{}) bool {
+func bindAndValid(c *gin.Context, target interface{}) bool {
 	errs := make(map[string]string)
-	err := c.ShouldBindJSON(v)
+	err := c.ShouldBindJSON(target)
 	if err != nil {
-		log.Println(err)
+		log.Println("raw err", err)
 		uni := ut.New(zh.New())
 		trans, _ := uni.GetTranslator("zh")
 		v, ok := binding.Validator.Engine().(*val.Validate)
-
 		if ok {
 			_ = zhTranslations.RegisterDefaultTranslations(v, trans)
 		}
 
 		verrs, ok := err.(val.ValidationErrors)
+
 		if !ok {
-			log.Println(verrs)
+			log.Println("verrs", verrs)
 			c.JSON(http.StatusNotAcceptable, gin.H{
 				"message": "请求参数错误",
 				"code":    http.StatusNotAcceptable,
@@ -40,12 +40,15 @@ func bindAndValid(c *gin.Context, v interface{}) bool {
 			return false
 		}
 
-		for key, value := range verrs.Translate(trans) {
-			errs[key[strings.Index(key, ".")+1:]] = value
+		for _, value := range verrs {
+			t := reflect.ValueOf(target)
+			realType := t.Type().Elem()
+			field, _ := realType.FieldByName(value.StructField())
+			errs[field.Tag.Get("json")] = value.Translate(trans)
 		}
 
 		c.JSON(http.StatusNotAcceptable, gin.H{
-			"errors":  JsonSnakeCase{errs},
+			"errors":  errs,
 			"message": "请求参数错误",
 			"code":    http.StatusNotAcceptable,
 		})

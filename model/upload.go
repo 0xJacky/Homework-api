@@ -4,11 +4,12 @@ package model
 type Upload struct {
 	Model
 
-	UserId uint   `json:"user_id"`
-	Path   string `json:"path"`
-	Size   uint   `json:"size"`
+	UserId 		uint   	`json:"user_id"`
+	Path   		string 	`json:"path"`
+	Size   		uint   	`json:"size"`
 
-	HomeworkId uint `json:"homework_id" gorm:"default:NULL"`
+	HomeworkId 	uint 	`json:"homework_id" gorm:"default:NULL"`
+	AssignId 	uint 	`json:"assign_id" gorm:"default:NULL"`
 }
 
 func FirstUpload(conds ...interface{}) (u Upload, err error) {

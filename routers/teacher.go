@@ -20,5 +20,18 @@ func teacherRoute()  {
 		g.GET("/classes", teacher.GetClasses)
 		// 加入班级
 		g.POST("/class/:id/join", teacher.JoinClass)
+		// 退出班级
+		g.POST("/class/:id/exit", teacher.ExitClass)
+
+		// 发布作业
+		g.POST("/homework", teacher.AddHomework)
+		// 修改作业
+		g.PUT("/homework", teacher.EditHomework)
+		// 删除作业
+		g.DELETE("/homework/:id", teacher.DeleteHomework)
+		// 作业详情
+		g.GET("/homework/:id", teacher.GetHomework)
+		// 作业列表
+		g.GET("/homework", teacher.GetHomeworks)
 	}
 }

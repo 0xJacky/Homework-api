@@ -10,7 +10,7 @@ func adminRoute() {
 	{
 
 		// 服务器状态统计
-		g.GET("analytic", admin.Analytic)
+		// g.GET("analytic", admin.Analytic)
 		// 消息测试
 		g.POST("/live", global.SendTestMessage)
 		// 用户

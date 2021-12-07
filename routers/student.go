@@ -6,13 +6,13 @@ import (
 )
 
 func studentRoute()  {
-	g := r.Group("student", AuthRequired(), Can(settings.Student))
+	g := r.Group("/student", AuthRequired(), Can(settings.Student))
 	{
 		// 班级详情
-		g.GET("class/:id", student.GetClass)
+		g.GET("/class/:id", student.GetClass)
 		// 班级列表
-		g.GET("classes", student.GetClasses)
+		g.GET("/classes", student.GetClasses)
 		// 加入班级
-		g.POST("class/:id/join", student.JoinClass)
+		g.POST("/class/:id/join", student.JoinClass)
 	}
 }

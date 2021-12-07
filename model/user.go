@@ -30,8 +30,19 @@ type User struct {
 	Email       string `json:"email"`
 	Description string `json:"description" gorm:"type:longtext"`
 	Avatar      string `json:"avatar"`
+	Classes		[]Class `json:"classes" gorm:"many2many:user_classes;"`
 
 	LastActive *time.Time `json:"last_active" gorm:"default:NULL"`
+}
+
+func (u *User) GetUserClasses() (classes []Class, err error) {
+	err = db.Model(u).Association("Classes").Find(&classes)
+	return
+}
+
+func (u *User) JoinClasses(class Class) (err error) {
+	err = db.Model(u).Association("Classes").Append(&class)
+	return
 }
 
 func (u *User) GetFullUserInfo() (user User) {

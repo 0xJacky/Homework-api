@@ -1,6 +1,9 @@
 package model
 
-import "time"
+import (
+	"github.com/gin-gonic/gin"
+	"time"
+)
 
 type Homework struct {
 	Model
@@ -16,6 +19,27 @@ type Homework struct {
 func GetHomework(id string) (homework Homework, err error) {
 	err = db.First(&homework, id).Error
 	return
+}
+
+func GetHomeworkList(c *gin.Context, userId, classId, name interface{}) (data *DataList) {
+	var h []struct {
+		Homework
+		Score uint `json:"score"`
+	}
+	var count int64
+	result := db.Select("homeworks.*, score").
+		Model(&Homework{}).Joins("join assigns on homeworks.id=assigns.homework_id").
+		Where("class_id", classId).
+		Where("assigns.user_id", userId)
+
+	if name != "" {
+		result = result.Where("name LIKE ?", "%"+name.(string)+"%")
+	}
+	result.Count(&count)
+
+	result.Scopes(orderAndPaginate(c)).Find(&h)
+
+	data = GetListWithPagination(&h, c, count)
 }
 
 func TeacherGetHomeworkList(c *gin.Context, userId, classId, name interface{}) (data *DataList) {

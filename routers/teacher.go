@@ -35,7 +35,6 @@ func teacherRoute() {
 		g.DELETE("/homework/:id", teacher.DeleteHomework)
 		// 作业详情
 		g.GET("/homework/:id", teacher.GetHomework)
-		// 作业列表
-		// g.GET("/homework", teacher.GetHomeworks)
+
 	}
 }

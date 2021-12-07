@@ -19,18 +19,19 @@ import (
 type User struct {
 	Model
 
-	Name     string `json:"name"`
-	SchoolID string `json:"school_id" gorm:"index:school_id,unique"`
+	Name     	string 		`json:"name"`
+	SchoolID 	string 		`json:"school_id" gorm:"index:school_id,unique"`
 	// 隐藏密码
-	Password    string `json:"-"`
-	Power       int    `json:"power"`
-	SuperUser   int    `json:"super_user"`
-	Gender      int    `json:"gender"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	Description string `json:"description" gorm:"type:longtext"`
-	Avatar      string `json:"avatar"`
-	Classes		[]Class `json:"classes" gorm:"many2many:user_classes;"`
+	Password    string 		`json:"-"`
+	Power       int    		`json:"power"`
+	SuperUser   int    		`json:"super_user"`
+	Gender      int    		`json:"gender"`
+	Phone       string 		`json:"phone"`
+	Email       string 		`json:"email"`
+	Description string 		`json:"description" gorm:"type:longtext"`
+	Avatar      string 		`json:"avatar"`
+	Classes		[]Class 	`json:"classes" gorm:"many2many:user_classes;"`
+	Assigns		[]Assign	`json:"assigns"`
 
 	LastActive *time.Time `json:"last_active" gorm:"default:NULL"`
 }
@@ -40,8 +41,15 @@ func (u *User) GetUserClasses() (classes []Class, err error) {
 	return
 }
 
-func (u *User) JoinClasses(class Class) (err error) {
+// JoinClass 加入班级
+func (u *User) JoinClass(class Class) (err error) {
 	err = db.Model(u).Association("Classes").Append(&class)
+	return
+}
+
+// ExitClass 退出班级
+func (u *User) ExitClass(class Class) (err error) {
+	err = db.Model(u).Association("Classes").Delete(class)
 	return
 }
 

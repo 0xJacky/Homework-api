@@ -43,7 +43,7 @@ func JoinClass(c *gin.Context)  {
 		api.ErrHandler(c, err)
 		return
 	}
-	err = user.JoinClasses(class)
+	err = user.JoinClass(class)
 	if err != nil {
 		api.ErrHandler(c, err)
 		return
@@ -51,5 +51,24 @@ func JoinClass(c *gin.Context)  {
 	c.JSON(http.StatusOK, gin.H{
 		"code": http.StatusOK,
 		"mesg": "加入班级成功",
+	})
+}
+
+func ExitClass(c *gin.Context) {
+	user := api.CurrentUser(c)
+	id := c.Param("id")
+	class, err := model.GetClass(id)
+	if err != nil {
+		api.ErrHandler(c, err)
+		return
+	}
+	err = user.ExitClass(class)
+	if err != nil {
+		api.ErrHandler(c, err)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": http.StatusOK,
+		"mesg": "退出班级成功",
 	})
 }

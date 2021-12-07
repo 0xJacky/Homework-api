@@ -14,5 +14,7 @@ func studentRoute()  {
 		g.GET("/classes", student.GetClasses)
 		// 加入班级
 		g.POST("/class/:id/join", student.JoinClass)
+		// 退出班级
+		g.POST("/class/:id/exit", student.ExitClass)
 	}
 }

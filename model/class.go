@@ -1,7 +1,5 @@
 package model
 
-import "log"
-
 type Class struct {
 	Model
 	Name   string `json:"name" binding:"required" gorm:"unique"`

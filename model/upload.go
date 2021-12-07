@@ -8,7 +8,7 @@ type Upload struct {
 	Path   string `json:"path"`
 	Size   uint   `json:"size"`
 
-	HomeworkId uint `json:"homework_id"`
+	HomeworkId uint `json:"homework_id" gorm:"default:NULL"`
 }
 
 func FirstUpload(conds ...interface{}) (u Upload, err error) {

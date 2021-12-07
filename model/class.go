@@ -9,11 +9,7 @@ type Class struct {
 }
 
 func GetClass(id string) (class Class, err error) {
-	result := db.First(&class, id)
-	err = result.Error
-	if err != nil {
-		log.Println("找不到该班级")
-	}
+	err = db.First(&class, id).Error
 	return
 }
 

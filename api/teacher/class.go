@@ -25,6 +25,7 @@ func AddClass(c *gin.Context)  {
 	c.JSON(code, gin.H{
 		"code": code,
 		"mesg": mesg,
+		"data": class,
 	})
 }
 
@@ -58,6 +59,7 @@ func EditClass(c *gin.Context)  {
 	c.JSON(code, gin.H{
 		"code": code,
 		"mesg": mesg,
+		"data": class,
 	})
 }
 

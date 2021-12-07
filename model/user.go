@@ -63,13 +63,17 @@ func (u *User) GetUserClasses(c *gin.Context) (data *DataList) {
 
 // JoinClass 加入班级
 func (u *User) JoinClass(class Class) (err error) {
-	err = db.Model(u).Association("Classes").Append(&class)
+	userClass := UserClass{
+		UserID:  u.ID,
+		ClassID: class.ID,
+	}
+	err = db.Model(&UserClass{}).Create(&userClass).Error
 	return
 }
 
 // ExitClass 退出班级
 func (u *User) ExitClass(class Class) (err error) {
-	err = db.Model(u).Association("Classes").Delete(class)
+	db.Where("user_id = ? AND class_id = ?", u.ID, class.ID).Delete(&UserClass{})
 	return
 }
 

@@ -14,11 +14,13 @@ func GetClass(id string) (class Class, err error) {
 
 func (class *Class) Insert() error {
 	err := db.Create(&class).Error
+	db.First(class, class.ID)
 	return err
 }
 
 func (class *Class) Update(n *Class) error {
 	err := db.Model(&class).Updates(n).Error
+	db.First(class, class.ID)
 	return err
 }
 

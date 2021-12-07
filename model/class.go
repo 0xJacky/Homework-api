@@ -1,7 +1,5 @@
 package model
 
-import "log"
-
 type Class struct {
 	Model
 	Name   string `json:"name" binding:"required" gorm:"unique"`
@@ -10,7 +8,7 @@ type Class struct {
 }
 
 func GetClass(id string) (class Class, err error) {
-	err = db.First(&class, id).Error
+	err = db.Joins("User").First(&class, id).Error
 	return
 }
 
@@ -22,4 +20,11 @@ func (class *Class) Insert() error {
 func (class *Class) Update(n *Class) error {
 	err := db.Model(&class).Updates(n).Error
 	return err
+}
+
+func (class *Class) IsJoined(u *User) bool {
+	var tmp UserClass
+	db.Where("user_id", u.ID).Where("class_id", class.ID).First(&tmp)
+	// 有关联数据，ID != 0
+	return tmp.ID != 0
 }

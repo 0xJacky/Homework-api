@@ -5,7 +5,7 @@ import (
 	"github.com/0xJacky/Homework-api/settings"
 )
 
-func studentRoute()  {
+func studentRoute() {
 	g := r.Group("/student", AuthRequired(), Can(settings.Student))
 	{
 		// 班级详情
@@ -16,5 +16,10 @@ func studentRoute()  {
 		g.POST("/class/:id/join", student.JoinClass)
 		// 退出班级
 		g.POST("/class/:id/exit", student.ExitClass)
+
+		// 获取作业列表
+		g.GET("/class/:id/homeworks", student.GetHomeworks)
+		// 作业详情
+		g.GET("/homework/:id", student.GetHomework)
 	}
 }

@@ -48,7 +48,7 @@ func (u *User) GetUserClasses(c *gin.Context) (data *DataList) {
 	result.Count(&count)
 
 	// []UserClass
-	result.Find(&userClasses)
+	result.Preload("Class.User").Find(&userClasses)
 
 	// []UserClass 转 []Class
 	var classes []*Class

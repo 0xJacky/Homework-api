@@ -8,6 +8,7 @@ import (
 )
 
 func GetClass(c *gin.Context) {
+	user := api.CurrentUser(c)
 	id := c.Param("id")
 	class, err := model.GetClass(id)
 	if err != nil {
@@ -17,6 +18,7 @@ func GetClass(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": http.StatusOK,
 		"data": class,
+		"join": class.IsJoined(user),
 	})
 }
 

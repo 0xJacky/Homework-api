@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-func AddHomework(c *gin.Context)  {
+func AddHomework(c *gin.Context) {
 	var homework model.Homework
 	if !api.BindAndValid(c, &homework) {
 		return
@@ -23,18 +23,22 @@ func AddHomework(c *gin.Context)  {
 	})
 }
 
-func EditHomework(c *gin.Context)  {
+func EditHomework(c *gin.Context) {
 
 }
 
-func DeleteHomework(c *gin.Context)  {
+func DeleteHomework(c *gin.Context) {
 
 }
 
-func GetHomework(c *gin.Context)  {
+func GetHomework(c *gin.Context) {
 
 }
 
-func GetHomeworks(c *gin.Context)  {
+func GetHomeworks(c *gin.Context) {
+	user := api.CurrentUser(c)
+	data := model.TeacherGetHomeworkList(c, user.ID,
+		c.Param("id"), c.Query("name"))
 
+	c.JSON(http.StatusOK, data)
 }

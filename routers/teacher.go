@@ -5,7 +5,7 @@ import (
 	"github.com/0xJacky/Homework-api/settings"
 )
 
-func teacherRoute()  {
+func teacherRoute() {
 	g := r.Group("/teacher", AuthRequired(), Can(settings.Teacher))
 	{
 		// 创建班级
@@ -23,6 +23,10 @@ func teacherRoute()  {
 		// 退出班级
 		g.POST("/class/:id/exit", teacher.ExitClass)
 
+		// 班级作业
+		g.GET("/class/:id/homeworks", teacher.GetHomeworks)
+		// 学生提交作业列表
+		g.GET("/homework/:id/assigns", teacher.GetAssignList)
 		// 发布作业
 		g.POST("/homework", teacher.AddHomework)
 		// 修改作业

@@ -23,8 +23,10 @@ func UpdateUploadPath(oldPath string, newPath string) (err error) {
 	return
 }
 
-func (u *Upload) Save() error {
-	return db.Create(u).Error
+func (u *Upload) Save() (err error) {
+	err = db.Create(u).Error
+	db.First(u, u.ID)
+	return
 }
 
 func (u *Upload) Updates(n *Upload) {

@@ -11,11 +11,17 @@ type Assign struct {
 	HomeworkId uint     `json:"homework_id"`
 }
 
-func InitAssign(n *Assign) (*Assign, error) {
+func InitAssign(n *Assign) error {
 
 	err := db.FirstOrCreate(n).Error
 
-	return n, err
+	return err
+}
+
+func (a *Assign) Update(n *Assign) (err error) {
+	err = db.Model(a).Updates(n).Error
+	db.Preload("Uploads").First(a, a.ID)
+	return
 }
 
 func TeacherGetAssignList(c *gin.Context, homeworkId, studentName interface{}) (data *DataList) {

@@ -32,6 +32,6 @@ func teacherRoute()  {
 		// 作业详情
 		g.GET("/homework/:id", teacher.GetHomework)
 		// 作业列表
-		g.GET("/homework", teacher.GetHomeworks)
+		// g.GET("/homework", teacher.GetHomeworks)
 	}
 }

@@ -1,54 +1,35 @@
 package model
 
-import (
-	"github.com/gin-gonic/gin"
-	"time"
-)
+import "time"
 
 type Homework struct {
 	Model
-	Name        string    `json:"name" binding:"required"`
-	Description string    `json:"description"`
-	Deadline    time.Time `json:"deadline"`
-	ClassId     uint      `json:"class_id"`
-	Uploads     []Upload  `json:"upload,omitempty"`
-	Assigns     []Assign  `json:"assign_id,omitempty"`
+	Name        string    	`json:"name" binding:"required"`
+	Description string    	`json:"description"`
+	Deadline    time.Time 	`json:"deadline"`
+	ClassId		uint 		`json:"class_id"`
+	Uploads     []Upload    `json:"upload"`
+	Assigns 	[]Assign	`json:"assign_id"`
 }
 
-func GetHomework(conds ...interface{}) (homework Homework, err error) {
-	err = db.First(&homework, conds...).Error
-	return
-}
-
-func GetHomeworkList(c *gin.Context, userId, classId, name interface{}) (data *DataList) {
-	var h []struct {
-		Homework
-		Score uint `json:"score"`
-	}
-	var count int64
-	result := db.Select("homeworks.*, score").
-		Model(&Homework{}).Joins("join assigns on homeworks.id=assigns.homework_id").
-		Where("class_id", classId).
-		Where("assigns.user_id", userId)
-
-	if name != "" {
-		result = result.Where("name LIKE ?", "%"+name.(string)+"%")
-	}
-	result.Count(&count)
-
-	result.Scopes(orderAndPaginate(c)).Find(&h)
-
-	data = GetListWithPagination(&h, c, count)
-
+func GetHomework(id string) (homework Homework, err error) {
+	err = db.First(&homework, id).Error
 	return
 }
 
 func (h *Homework) Insert() (err error) {
 	err = db.Create(&h).Error
+	db.First(h, h.ID)
 	return
 }
 
 func (h *Homework) Update(n *Homework) (err error) {
 	err = db.Model(h).Updates(n).Error
+	db.First(h, h.ID)
+	return
+}
+
+func (h *Homework) Delete() (err error) {
+	err = db.Delete(h).Error
 	return
 }

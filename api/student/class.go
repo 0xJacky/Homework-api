@@ -7,10 +7,10 @@ import (
 	"net/http"
 )
 
-func GetClass(c *gin.Context)  {
+func GetClass(c *gin.Context) {
 	id := c.Param("id")
 	class, err := model.GetClass(id)
-	if err != nil{
+	if err != nil {
 		api.ErrHandler(c, err)
 		return
 	}
@@ -20,22 +20,15 @@ func GetClass(c *gin.Context)  {
 	})
 }
 
-func GetClasses(c *gin.Context)  {
+func GetClasses(c *gin.Context) {
 	user := api.CurrentUser(c)
 
-	classes, err := user.GetUserClasses()
-	if err != nil {
-		api.ErrHandler(c, err)
-		return
-	}
+	data := user.GetUserClasses(c)
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": http.StatusOK,
-		"data": classes,
-	})
+	c.JSON(http.StatusOK, data)
 }
 
-func JoinClass(c *gin.Context)  {
+func JoinClass(c *gin.Context) {
 	user := api.CurrentUser(c)
 	id := c.Param("id")
 	class, err := model.GetClass(id)

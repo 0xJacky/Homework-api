@@ -7,18 +7,18 @@ import (
 	"net/http"
 )
 
-func AddClass(c *gin.Context)  {
+func AddClass(c *gin.Context) {
 	var code int
 	var mesg string
 	var class model.Class
-	if !api.BindAndValid(c, &class){
+	if !api.BindAndValid(c, &class) {
 		return
 	}
 	err := class.Insert()
-	if err != nil{
+	if err != nil {
 		code = http.StatusForbidden
 		mesg = "创建班级失败: 已存在同名班级"
-	}else{
+	} else {
 		code = http.StatusOK
 		mesg = "创建班级成功"
 	}
@@ -28,14 +28,14 @@ func AddClass(c *gin.Context)  {
 	})
 }
 
-func EditClass(c *gin.Context)  {
+func EditClass(c *gin.Context) {
 	var code int
 	var mesg string
 	id := c.Param("id")
-	var json struct{
+	var json struct {
 		Name string `json:"name"`
 	}
-	if !api.BindAndValid(c, &json){
+	if !api.BindAndValid(c, &json) {
 		return
 	}
 	class, err := model.GetClass(id)
@@ -48,10 +48,10 @@ func EditClass(c *gin.Context)  {
 		Name: json.Name,
 	}
 	err = class.Update(&n)
-	if err != nil{
+	if err != nil {
 		code = http.StatusForbidden
 		mesg = "更新班级信息失败: 已存在同名班级"
-	}else{
+	} else {
 		code = http.StatusOK
 		mesg = "更新班级信息成功"
 	}
@@ -61,10 +61,10 @@ func EditClass(c *gin.Context)  {
 	})
 }
 
-func GetClass(c *gin.Context)  {
+func GetClass(c *gin.Context) {
 	id := c.Param("id")
 	class, err := model.GetClass(id)
-	if err != nil{
+	if err != nil {
 		api.ErrHandler(c, err)
 		return
 	}
@@ -74,26 +74,19 @@ func GetClass(c *gin.Context)  {
 	})
 }
 
-func GetClasses(c *gin.Context)  {
+func GetClasses(c *gin.Context) {
 	user := api.CurrentUser(c)
 
-	classes, err := user.GetUserClasses()
-	if err != nil {
-		api.ErrHandler(c, err)
-		return
-	}
+	data := user.GetUserClasses(c)
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": http.StatusOK,
-		"data": classes,
-	})
+	c.JSON(http.StatusOK, data)
 }
 
-func DeleteClass(c *gin.Context)  {
+func DeleteClass(c *gin.Context) {
 
 }
 
-func JoinClass(c *gin.Context)  {
+func JoinClass(c *gin.Context) {
 	user := api.CurrentUser(c)
 	id := c.Param("id")
 	class, err := model.GetClass(id)

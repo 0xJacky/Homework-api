@@ -1,11 +1,12 @@
 package model
 
+import "log"
+
 type Class struct {
 	Model
 	Name   string `json:"name" binding:"required" gorm:"unique"`
 	UserID uint   `json:"user_id"`
-	User   User   `json:"user"`
-	Users  []User `json:"users" gorm:"many2many:user_classes;"`
+	User   *User  `json:"user,omitempty"`
 }
 
 func GetClass(id string) (class Class, err error) {

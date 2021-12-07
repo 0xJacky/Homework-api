@@ -19,25 +19,45 @@ import (
 type User struct {
 	Model
 
-	Name     	string 		`json:"name"`
-	SchoolID 	string 		`json:"school_id" gorm:"index:school_id,unique"`
+	Name     string `json:"name"`
+	SchoolID string `json:"school_id" gorm:"index:school_id,unique"`
 	// 隐藏密码
-	Password    string 		`json:"-"`
-	Power       int    		`json:"power"`
-	SuperUser   int    		`json:"super_user"`
-	Gender      int    		`json:"gender"`
-	Phone       string 		`json:"phone"`
-	Email       string 		`json:"email"`
-	Description string 		`json:"description" gorm:"type:longtext"`
-	Avatar      string 		`json:"avatar"`
-	Classes		[]Class 	`json:"classes" gorm:"many2many:user_classes;"`
-	Assigns		[]Assign	`json:"assigns"`
+	Password    string   `json:"-"`
+	Power       int      `json:"power"`
+	SuperUser   int      `json:"super_user"`
+	Gender      int      `json:"gender"`
+	Phone       string   `json:"phone"`
+	Email       string   `json:"email"`
+	Description string   `json:"description" gorm:"type:longtext"`
+	Avatar      string   `json:"avatar"`
+	Assigns     []Assign `json:"assigns"`
 
 	LastActive *time.Time `json:"last_active" gorm:"default:NULL"`
 }
 
-func (u *User) GetUserClasses() (classes []Class, err error) {
-	err = db.Model(u).Association("Classes").Find(&classes)
+func (u *User) GetUserClasses(c *gin.Context) (data *DataList) {
+
+	var userClasses []UserClass
+	var count int64
+
+	result := db.Model(&UserClass{}).
+		Joins("Class").
+		Joins("join users on users.id=user_classes.user_id").
+		Where("users.id = ?", u.ID)
+
+	result.Count(&count)
+
+	// []UserClass
+	result.Find(&userClasses)
+
+	// []UserClass 转 []Class
+	var classes []*Class
+	for i := range userClasses {
+		classes = append(classes, userClasses[i].Class)
+	}
+
+	data = GetListWithPagination(&classes, c, count)
+
 	return
 }
 

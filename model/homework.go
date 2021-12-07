@@ -40,6 +40,8 @@ func GetHomeworkList(c *gin.Context, userId, classId, name interface{}) (data *D
 	result.Scopes(orderAndPaginate(c)).Find(&h)
 
 	data = GetListWithPagination(&h, c, count)
+	
+	return
 }
 
 func TeacherGetHomeworkList(c *gin.Context, userId, classId, name interface{}) (data *DataList) {

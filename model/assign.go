@@ -13,7 +13,7 @@ type Assign struct {
 
 func InitAssign(n *Assign) error {
 
-	err := db.Preload("Uploads").FirstOrCreate(n).Error
+	err := db.Where("user_id = ? AND homework_id = ?", n.UserId, n.HomeworkId).Preload("Uploads").FirstOrCreate(n).Error
 
 	return err
 }

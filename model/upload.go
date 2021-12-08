@@ -24,7 +24,7 @@ func UpdateUploadPath(oldPath string, newPath string) (err error) {
 }
 
 func (u *Upload) Save() (err error) {
-	err = db.FirstOrCreate(u).Error
+	err = db.Where("path", u.Path).FirstOrCreate(u).Error
 	db.First(u, u.ID)
 	return
 }

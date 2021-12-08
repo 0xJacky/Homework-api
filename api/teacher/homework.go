@@ -5,13 +5,28 @@ import (
 	"github.com/0xJacky/Homework-api/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 func AddHomework(c *gin.Context) {
-	var homework model.Homework
-	if !api.BindAndValid(c, &homework) {
+	var json struct {
+		Name        string    `json:"name" binding:"required"`
+		Description string    `json:"description"`
+		Deadline    time.Time `json:"deadline" binding:"required"`
+		ClassId     uint      `json:"class_id" binding:"required"`
+	}
+
+	if !api.BindAndValid(c, &json) {
 		return
 	}
+
+	homework := model.Homework{
+		Name:        json.Name,
+		Description: json.Description,
+		Deadline:    json.Deadline,
+		ClassId:     json.ClassId,
+	}
+
 	err := homework.Insert()
 	if err != nil {
 		api.ErrHandler(c, err)
@@ -24,7 +39,7 @@ func AddHomework(c *gin.Context) {
 	})
 }
 
-func EditHomework(c *gin.Context)  {
+func EditHomework(c *gin.Context) {
 	id := c.Param("id")
 	homework, err := model.GetHomework(id)
 	if err != nil {
@@ -47,7 +62,7 @@ func EditHomework(c *gin.Context)  {
 	})
 }
 
-func DeleteHomework(c *gin.Context)  {
+func DeleteHomework(c *gin.Context) {
 	id := c.Param("id")
 	homework, err := model.GetHomework(id)
 	if err != nil {
@@ -65,7 +80,7 @@ func DeleteHomework(c *gin.Context)  {
 	})
 }
 
-func GetHomework(c *gin.Context)  {
+func GetHomework(c *gin.Context) {
 	id := c.Param("id")
 	homework, err := model.GetHomework(id)
 	if err != nil {

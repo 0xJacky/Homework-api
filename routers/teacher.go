@@ -13,7 +13,7 @@ func teacherRoute() {
 		// 班级详情
 		g.GET("/class/:id", teacher.GetClass)
 		// 修改班级信息
-		g.PUT("/class/:id", teacher.EditClass)
+		g.POST("/class/:id", teacher.EditClass)
 		// 删除班级
 		// g.DELETE("/class/:id", teacher.DeleteClass)
 		// 班级列表
@@ -27,10 +27,15 @@ func teacherRoute() {
 		g.GET("/class/:id/homeworks", teacher.GetHomeworks)
 		// 学生提交作业列表
 		g.GET("/homework/:id/assigns", teacher.GetAssignList)
+		// 学生作业提交详情
+		g.GET("/assign/:id", teacher.GetAssign)
+		// 批改作业
+		g.POST("/assign/:id", teacher.EditAssign)
+
 		// 发布作业
 		g.POST("/homework", teacher.AddHomework)
 		// 修改作业
-		g.PUT("/homework", teacher.EditHomework)
+		g.POST("/homework/:id", teacher.EditHomework)
 		// 删除作业
 		g.DELETE("/homework/:id", teacher.DeleteHomework)
 		// 作业详情

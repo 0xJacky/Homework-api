@@ -8,25 +8,38 @@ import (
 )
 
 func AddClass(c *gin.Context) {
-	var code int
-	var mesg string
-	var class model.Class
-	if !api.BindAndValid(c, &class) {
+	var json struct {
+		Name string `json:"name"`
+	}
+	if !api.BindAndValid(c, &json) {
 		return
 	}
-	err := class.Insert()
-	if err != nil {
-		code = http.StatusForbidden
-		mesg = "创建班级失败: 已存在同名班级"
-	} else {
-		code = http.StatusOK
-		mesg = "创建班级成功"
+	user := api.CurrentUser(c)
+	class := &model.Class{
+		Name:   json.Name,
+		UserID: user.ID,
 	}
-	c.JSON(code, gin.H{
-		"code": code,
-		"mesg": mesg,
-		"data": class,
-	})
+
+	err := class.Insert()
+
+	if err != nil {
+		api.ErrHandler(c, err)
+		return
+	}
+
+	userClass := model.UserClass{
+		UserID:  user.ID,
+		ClassID: class.ID,
+	}
+
+	err = userClass.Save()
+
+	if err != nil {
+		api.ErrHandler(c, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, class)
 }
 
 func EditClass(c *gin.Context) {
@@ -64,6 +77,7 @@ func EditClass(c *gin.Context) {
 }
 
 func GetClass(c *gin.Context) {
+	user := api.CurrentUser(c)
 	id := c.Param("id")
 	class, err := model.GetClass(id)
 	if err != nil {
@@ -73,13 +87,14 @@ func GetClass(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code": http.StatusOK,
 		"data": class,
+		"join": class.IsJoined(user),
 	})
 }
 
 func GetClasses(c *gin.Context) {
 	user := api.CurrentUser(c)
 
-	data := user.GetUserClasses(c)
+	data := model.TeacherGetClasses(c, user.ID, c.Query("name"))
 
 	c.JSON(http.StatusOK, data)
 }
@@ -113,6 +128,13 @@ func ExitClass(c *gin.Context) {
 	class, err := model.GetClass(id)
 	if err != nil {
 		api.ErrHandler(c, err)
+		return
+	}
+	// 自己创建的班级不能退出
+	if class.UserID == user.ID {
+		c.JSON(http.StatusNotAcceptable, gin.H{
+			"message": "自己创建的班级不能退出",
+		})
 		return
 	}
 	err = user.ExitClass(class)

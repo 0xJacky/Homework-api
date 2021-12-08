@@ -7,3 +7,8 @@ type UserClass struct {
 	ClassID uint   `json:"class_id"`
 	Class   *Class `json:"class,omitempty"`
 }
+
+func (c *UserClass) Save() (err error) {
+	err = db.Save(c).Error
+	return
+}

@@ -7,7 +7,7 @@ import (
 
 type Homework struct {
 	Model
-	Name        string    `json:"name" binding:"required"`
+	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	Deadline    time.Time `json:"deadline"`
 	ClassId     uint      `json:"class_id"`
@@ -17,7 +17,7 @@ type Homework struct {
 }
 
 func GetHomework(id string) (homework Homework, err error) {
-	err = db.First(&homework, id).Error
+	err = db.Joins("Class").First(&homework, id).Error
 	return
 }
 
@@ -40,7 +40,7 @@ func GetHomeworkList(c *gin.Context, userId, classId, name interface{}) (data *D
 	result.Scopes(orderAndPaginate(c)).Find(&h)
 
 	data = GetListWithPagination(&h, c, count)
-	
+
 	return
 }
 

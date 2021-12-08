@@ -24,7 +24,12 @@ func (a *Assign) Update(n *Assign) (err error) {
 	return
 }
 
-func TeacherGetAssignList(c *gin.Context, homeworkId, studentName interface{}) (data *DataList) {
+func FirstAssign(conds ...interface{}) (a Assign, err error) {
+	err = db.Joins("User").First(&a, conds...).Error
+	return
+}
+
+func TeacherGetAssignList(c *gin.Context, homeworkId, schoolId, studentName interface{}) (data *DataList) {
 	var assigns []struct {
 		Assign
 	}
@@ -35,11 +40,16 @@ func TeacherGetAssignList(c *gin.Context, homeworkId, studentName interface{}) (
 		Where("user_classes.class_id = homeworks.class_id").
 		Where("homework_id", homeworkId)
 
+	if schoolId != "" {
+		result = result.Where("users.school_id LIKE ?", "%"+schoolId.(string)+"%")
+	}
+
 	if studentName != "" {
 		result = result.Where("users.name LIKE ?", "%"+studentName.(string)+"%")
 	}
 
 	result.Scopes(orderAndPaginate(c)).Find(&assigns)
 	data = GetListWithPagination(&assigns, c, count)
+
 	return
 }

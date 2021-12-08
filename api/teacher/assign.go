@@ -25,7 +25,7 @@ func GetAssign(c *gin.Context) {
 
 func EditAssign(c *gin.Context) {
 	var json struct {
-		Score uint `json:"score"`
+		Score uint `json:"score" binding:"min=1,max=100"`
 	}
 	if !api.BindAndValid(c, &json) {
 		return

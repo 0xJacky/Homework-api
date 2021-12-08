@@ -6,14 +6,14 @@ type Assign struct {
 	Model
 	UserId     uint     `json:"user_id"`
 	User       *User    `json:"user,omitempty"`
-	Uploads    []Upload `json:"upload,omitempty"`
+	Uploads    []Upload `json:"uploads,omitempty"`
 	Score      uint     `json:"score"`
 	HomeworkId uint     `json:"homework_id"`
 }
 
 func InitAssign(n *Assign) error {
 
-	err := db.FirstOrCreate(n).Error
+	err := db.Preload("Uploads").FirstOrCreate(n).Error
 
 	return err
 }
@@ -25,7 +25,8 @@ func (a *Assign) Update(n *Assign) (err error) {
 }
 
 func FirstAssign(conds ...interface{}) (a Assign, err error) {
-	err = db.Joins("User").First(&a, conds...).Error
+	err = db.Joins("User").Preload("Uploads").
+		First(&a, conds...).Error
 	return
 }
 

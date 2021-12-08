@@ -22,8 +22,8 @@ func studentRoute() {
 		// 作业详情
 		g.GET("/homework/:id", student.GetHomework)
 		// 提交作业
-		g.POST("/homework/:id", student.AssignHomework)
+		g.POST("/homework/:id/upload", student.UploadHomework)
 		// 删除作业附件
-		g.DELETE("/homework/upload/:id", student.DeleteUpload)
+		g.DELETE("/assign/:assign_id/upload/:upload_id", student.DeleteUpload)
 	}
 }

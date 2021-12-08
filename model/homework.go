@@ -28,9 +28,9 @@ func GetHomeworkList(c *gin.Context, userId, classId, name interface{}) (data *D
 	}
 	var count int64
 	result := db.Select("homeworks.*, score").
-		Model(&Homework{}).Joins("join assigns on homeworks.id=assigns.homework_id").
-		Where("class_id", classId).
-		Where("assigns.user_id", userId)
+		Model(&Homework{}).Joins("left join assigns on homeworks.id=assigns.homework_id"+
+		" and assigns.user_id = ?", userId).
+		Where("class_id", classId)
 
 	if name != "" {
 		result = result.Where("name LIKE ?", "%"+name.(string)+"%")

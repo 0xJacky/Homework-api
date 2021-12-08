@@ -1,6 +1,9 @@
 package model
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/0xJacky/Homework-api/settings"
+	"github.com/gin-gonic/gin"
+)
 
 type Assign struct {
 	Model
@@ -36,10 +39,11 @@ func TeacherGetAssignList(c *gin.Context, homeworkId, schoolId, studentName inte
 	}
 	var count int64
 	result := db.Model(&UserClass{}).Select("assigns.*").Joins("User").
-		Joins("left join assigns on assigns.user_id=user_classes.user_id").
-		Joins("join homeworks on homeworks.id=homework_id").
+		Joins("left join assigns on assigns.user_id=user_classes.user_id "+
+			"and assigns.homework_id = ?", homeworkId).
+		Joins("join homeworks on homeworks.id=?", homeworkId).
 		Where("user_classes.class_id = homeworks.class_id").
-		Where("homework_id", homeworkId)
+		Where("power", settings.Student)
 
 	if schoolId != "" {
 		result = result.Where("users.school_id LIKE ?", "%"+schoolId.(string)+"%")

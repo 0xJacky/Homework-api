@@ -2,18 +2,20 @@ package model
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/datatypes"
 	"time"
 )
 
 type Homework struct {
 	Model
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Deadline    time.Time `json:"deadline"`
-	ClassId     uint      `json:"class_id"`
-	Class       *Class    `json:"class"`
-	Uploads     []Upload  `json:"upload,omitempty"`
-	Assigns     []Assign  `json:"assign_id,omitempty"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Deadline    time.Time      `json:"deadline"`
+	ClassId     uint           `json:"class_id"`
+	Class       *Class         `json:"class"`
+	Uploads     []Upload       `json:"upload,omitempty"`
+	Assigns     []Assign       `json:"assign_id,omitempty"`
+	Template    datatypes.JSON `json:"template"`
 }
 
 func GetHomework(id string) (homework Homework, err error) {

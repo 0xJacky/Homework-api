@@ -3,15 +3,17 @@ package model
 import (
 	"github.com/0xJacky/Homework-api/settings"
 	"github.com/gin-gonic/gin"
+	"gorm.io/datatypes"
 )
 
 type Assign struct {
 	Model
-	UserId     uint     `json:"user_id"`
-	User       *User    `json:"user,omitempty"`
-	Uploads    []Upload `json:"uploads,omitempty"`
-	Score      uint     `json:"score"`
-	HomeworkId uint     `json:"homework_id"`
+	UserId     uint           `json:"user_id"`
+	User       *User          `json:"user,omitempty"`
+	Uploads    []Upload       `json:"uploads,omitempty"`
+	Score      uint           `json:"score"`
+	HomeworkId uint           `json:"homework_id"`
+	Answer     datatypes.JSON `json:"answer"`
 }
 
 func InitAssign(n *Assign) error {

@@ -9,7 +9,7 @@ import (
 
 func AddClass(c *gin.Context) {
 	var json struct {
-		Name string `json:"name"`
+		Name string `json:"name" binding:"required"`
 	}
 	if !api.BindAndValid(c, &json) {
 		return

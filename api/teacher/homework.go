@@ -4,16 +4,18 @@ import (
 	"github.com/0xJacky/Homework-api/api"
 	"github.com/0xJacky/Homework-api/model"
 	"github.com/gin-gonic/gin"
+	"gorm.io/datatypes"
 	"net/http"
 	"time"
 )
 
 func AddHomework(c *gin.Context) {
 	var json struct {
-		Name        string    `json:"name" binding:"required"`
-		Description string    `json:"description"`
-		Deadline    time.Time `json:"deadline" binding:"required"`
-		ClassId     uint      `json:"class_id" binding:"required"`
+		Name        string         `json:"name" binding:"required"`
+		Description string         `json:"description"`
+		Deadline    time.Time      `json:"deadline" binding:"required"`
+		ClassId     uint           `json:"class_id" binding:"required"`
+		Template    datatypes.JSON `json:"template"`
 	}
 
 	if !api.BindAndValid(c, &json) {
@@ -25,6 +27,7 @@ func AddHomework(c *gin.Context) {
 		Description: json.Description,
 		Deadline:    json.Deadline,
 		ClassId:     json.ClassId,
+		Template:    json.Template,
 	}
 
 	err := homework.Insert()

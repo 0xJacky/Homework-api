@@ -99,11 +99,8 @@ func DeleteUpload(c *gin.Context) {
 	}
 
 	upload.DeleteByPath()
-	err = os.Remove(upload.Path)
-	if err != nil {
-		api.ErrHandler(c, err)
-		return
-	}
+	_ = os.Remove(upload.Path)
+
 	assign, err := model.FirstAssign(c.Param("assign_id"))
 
 	if err != nil {

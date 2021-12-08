@@ -31,8 +31,8 @@ func GetHomework(c *gin.Context) {
 
 func GetHomeworks(c *gin.Context) {
 	user := api.CurrentUser(c)
-	data := model.GetHomeworkList(c, c.Param("id"),
-		user.ID,
+	data := model.GetHomeworkList(c,
+		user.ID, c.Param("id"),
 		c.Query("name"))
 
 	c.JSON(http.StatusOK, data)

@@ -21,8 +21,6 @@ func AddUser(c *gin.Context) {
 		Phone       string `json:"phone"`
 		Email       string `json:"email" binding:"omitempty,email"`
 		Description string `json:"description"`
-
-		LastActive *time.Time `json:"last_active"`
 	}
 	if !api.BindAndValid(c, &json) {
 		return
@@ -73,7 +71,7 @@ func EditUser(c *gin.Context) {
 		Name     string `json:"name"`
 		SchoolID string `json:"school_id"`
 		// 隐藏密码
-		Password    string `json:"password"`
+		Password    string `json:"password" binding:"omitempty,min=6"`
 		Power       int    `json:"power" binding:"omitempty,min=1,max=2"`
 		SuperUser   int    `json:"super_user" binding:"omitempty,min=-1,max=1"`
 		Gender      int    `json:"gender" binding:"omitempty,min=0,max=2"`

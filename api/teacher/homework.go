@@ -87,7 +87,7 @@ func DeleteHomework(c *gin.Context) {
 
 func GetHomework(c *gin.Context) {
 	id := c.Param("id")
-	homework, err := model.TeacherGetHomework(id)
+	homework, err := model.GetHomework(id)
 	if err != nil {
 		api.ErrHandler(c, err)
 		return

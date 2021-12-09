@@ -9,6 +9,8 @@ import (
 
 func GetHomework(c *gin.Context) {
 	h, err := model.GetHomework(c.Param("id"))
+	// 屏蔽答案
+	h.Answer = nil
 	if err != nil {
 		api.ErrHandler(c, err)
 		return

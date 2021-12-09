@@ -15,7 +15,7 @@ type Assign struct {
 	ObjectiveScore uint           `json:"objective_score"`
 	Score          uint           `json:"score"`
 	HomeworkId     uint           `json:"homework_id"`
-	Homework       Homework       `json:"homework"`
+	Homework       *Homework      `json:"homework,omitempty"`
 	Answer         datatypes.JSON `json:"answer"`
 	AssignAt       *time.Time     `json:"assign_at"`
 }
@@ -43,9 +43,10 @@ func FirstAssign(conds ...interface{}) (a Assign, err error) {
 func TeacherGetAssignList(c *gin.Context, homeworkId, schoolId, studentName interface{}) (data *DataList) {
 	var assigns []struct {
 		Assign
+		Deadline time.Time `json:"deadline"`
 	}
 	var count int64
-	result := db.Model(&UserClass{}).Select("assigns.*").Joins("User").
+	result := db.Model(&UserClass{}).Select("assigns.*, deadline").Joins("User").
 		Joins("left join assigns on assigns.user_id=user_classes.user_id "+
 			"and assigns.homework_id = ?", homeworkId).
 		Joins("join homeworks on homeworks.id=?", homeworkId).

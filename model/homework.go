@@ -12,10 +12,24 @@ type Homework struct {
 	Description string         `json:"description"`
 	Deadline    time.Time      `json:"deadline"`
 	ClassId     uint           `json:"class_id"`
-	Class       *Class         `json:"class"`
+	Class       *Class         `json:"class,omitempty"`
 	Uploads     []Upload       `json:"upload,omitempty"`
 	Assigns     []Assign       `json:"assign_id,omitempty"`
 	Template    datatypes.JSON `json:"template"`
+	Answer      datatypes.JSON `json:"-"`
+}
+
+type HomeworkWithAnswer struct {
+	Model
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	Deadline    time.Time      `json:"deadline"`
+	ClassId     uint           `json:"class_id"`
+	Class       *Class         `json:"class,omitempty"`
+	Uploads     []Upload       `json:"upload,omitempty"`
+	Assigns     []Assign       `json:"assign_id,omitempty"`
+	Template    datatypes.JSON `json:"template"`
+	Answer      datatypes.JSON `json:"answer"`
 }
 
 func GetHomework(id string) (homework Homework, err error) {
@@ -23,13 +37,20 @@ func GetHomework(id string) (homework Homework, err error) {
 	return
 }
 
+func TeacherGetHomework(id string) (homework HomeworkWithAnswer, err error) {
+	err = db.Model(&Homework{}).
+		Joins("Class").First(&homework, id).Error
+	return
+}
+
 func GetHomeworkList(c *gin.Context, userId, classId, name interface{}) (data *DataList) {
 	var h []struct {
 		Homework
-		Score uint `json:"score"`
+		Score    uint       `json:"score"`
+		AssignAt *time.Time `json:"assign_at"`
 	}
 	var count int64
-	result := db.Select("homeworks.*, score").
+	result := db.Select("homeworks.*, score, assigns.assign_at").
 		Model(&Homework{}).Joins("left join assigns on homeworks.id=assigns.homework_id"+
 		" and assigns.user_id = ?", userId).
 		Where("class_id", classId)

@@ -16,6 +16,7 @@ func AddHomework(c *gin.Context) {
 		Deadline    time.Time      `json:"deadline" binding:"required"`
 		ClassId     uint           `json:"class_id" binding:"required"`
 		Template    datatypes.JSON `json:"template"`
+		Answer      datatypes.JSON `json:"answer"`
 	}
 
 	if !api.BindAndValid(c, &json) {
@@ -28,6 +29,7 @@ func AddHomework(c *gin.Context) {
 		Deadline:    json.Deadline,
 		ClassId:     json.ClassId,
 		Template:    json.Template,
+		Answer:      json.Answer,
 	}
 
 	err := homework.Insert()
@@ -85,7 +87,7 @@ func DeleteHomework(c *gin.Context) {
 
 func GetHomework(c *gin.Context) {
 	id := c.Param("id")
-	homework, err := model.GetHomework(id)
+	homework, err := model.TeacherGetHomework(id)
 	if err != nil {
 		api.ErrHandler(c, err)
 		return

@@ -4,16 +4,20 @@ import (
 	"github.com/0xJacky/Homework-api/settings"
 	"github.com/gin-gonic/gin"
 	"gorm.io/datatypes"
+	"time"
 )
 
 type Assign struct {
 	Model
-	UserId     uint           `json:"user_id"`
-	User       *User          `json:"user,omitempty"`
-	Uploads    []Upload       `json:"uploads,omitempty"`
-	Score      uint           `json:"score"`
-	HomeworkId uint           `json:"homework_id"`
-	Answer     datatypes.JSON `json:"answer"`
+	UserId         uint           `json:"user_id"`
+	User           *User          `json:"user,omitempty"`
+	Uploads        []Upload       `json:"uploads,omitempty"`
+	ObjectiveScore uint           `json:"objective_score"`
+	Score          uint           `json:"score"`
+	HomeworkId     uint           `json:"homework_id"`
+	Homework       Homework       `json:"homework"`
+	Answer         datatypes.JSON `json:"answer"`
+	AssignAt       *time.Time     `json:"assign_at"`
 }
 
 func InitAssign(n *Assign) error {
@@ -31,6 +35,7 @@ func (a *Assign) Update(n *Assign) (err error) {
 
 func FirstAssign(conds ...interface{}) (a Assign, err error) {
 	err = db.Joins("User").Preload("Uploads").
+		Joins("Homework").
 		First(&a, conds...).Error
 	return
 }

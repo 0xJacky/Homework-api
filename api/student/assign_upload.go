@@ -36,7 +36,7 @@ func UploadHomework(c *gin.Context) {
 	files := form.File["file"]
 	// 创建附件存储目录
 	p := path.Join("upload", cast.ToString(user.ID), id)
-	err = os.MkdirAll(p, 0766)
+	err = os.MkdirAll(p, 0777)
 	if err != nil {
 		api.ErrHandler(c, err)
 		return
